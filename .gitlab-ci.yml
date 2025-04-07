@@ -1,0 +1,18 @@
+stages:
+  - build
+  - lint
+
+lint:
+  stage: lint
+  image: golangci/golangci-lint:latest
+  allow_failure: true
+  script: 
+    - golangci-lint run
+    
+build:
+  stage: build
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  script:
+    - docker build -f order_service ./docker/Dockerfile
