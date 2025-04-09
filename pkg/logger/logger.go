@@ -15,7 +15,7 @@ type key string
 const (
 	Key = key("logger")
 
-	RequesID = key("request_id")
+	RequestID = key("request_id")
 )
 
 type Logger struct {
@@ -34,19 +34,13 @@ func NewLogger(ctx context.Context) (context.Context, error) {
 }
 
 func GetLoggerFromCtx(ctx context.Context) *Logger {
-	// тут проблема с логером в контексте. После запуска сервера
-	// почемуто он из контекста пропадает и после каждого вызова
-	// также пропадает. Непонятно как бороться с этим
 	return ctx.Value(Key).(*Logger)
 }
 
 func Interceptor(ctx context.Context, logger *Logger) grpc.UnaryServerInterceptor {
-	return func(ctx context.Context,
-		req any, info *grpc.UnaryServerInfo,
-		handler grpc.UnaryHandler,
-	) (resp any, err error) {
+	return func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp any, err error) {
 		guid := uuid.New().String()
-		ctx = context.WithValue(ctx, RequesID, guid)
+		ctx = context.WithValue(ctx, RequestID, guid)
 		ctx = context.WithValue(ctx, Key, logger)
 
 		logger := GetLoggerFromCtx(ctx)
@@ -61,16 +55,16 @@ func Interceptor(ctx context.Context, logger *Logger) grpc.UnaryServerIntercepto
 }
 
 func (l *Logger) Info(ctx context.Context, msg string, fields ...zap.Field) {
-	if ctx.Value(RequesID) != nil {
-		fields = append(fields, zap.String(string(RequesID), ctx.Value(RequesID).(string)))
+	if ctx.Value(RequestID) != nil {
+		fields = append(fields, zap.String(string(RequestID), ctx.Value(RequestID).(string)))
 	}
 
 	l.logger.Info(msg, fields...)
 }
 
 func (l *Logger) Fatal(ctx context.Context, msg string, fields ...zap.Field) {
-	if ctx.Value(RequesID) != nil {
-		fields = append(fields, zap.String(string(RequesID), ctx.Value(RequesID).(string)))
+	if ctx.Value(RequestID) != nil {
+		fields = append(fields, zap.String(string(RequestID), ctx.Value(RequestID).(string)))
 	}
 
 	l.logger.Fatal(msg, fields...)
