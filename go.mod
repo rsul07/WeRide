@@ -1,4 +1,4 @@
-module weride
+module we_ride
 
 go 1.23.5
 
