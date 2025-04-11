@@ -30,6 +30,10 @@ func main() {
 		logger.GetLoggerFromCtx(ctx).Fatal(ctx, "failed to read config:", zap.Error(err))
 	}
 
+	if err := database.RunMigrations(ctx, cfg.Postgres); err != nil {
+		logger.GetLoggerFromCtx(ctx).Fatal(ctx, "failed to run migrations:", zap.Error(err))
+	}
+
 	pool, err := database.New(ctx, cfg.Postgres)
 	if err != nil {
 		logger.GetLoggerFromCtx(ctx).Fatal(ctx, "failed to connect to database:", zap.Error(err))
