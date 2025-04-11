@@ -22,7 +22,7 @@ type Logger struct {
 	logger *zap.Logger
 }
 
-func NewLogger(ctx context.Context) (context.Context, error) {
+func New(ctx context.Context) (context.Context, error) {
 	logger, err := zap.NewProduction()
 	if err != nil {
 		return nil, fmt.Errorf("logger.NewLogger: %w", err)
