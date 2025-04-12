@@ -1,23 +1,35 @@
-FROM golang:1.23.6-alpine3.21 as builder
+# Этап сборки
+FROM golang:1.23.5-alpine AS builder
 
-# Set destination for COPY
-WORKDIR /room
+# Устанавливаем зависимости
+RUN apk add --no-cache git
 
-# Download Go modules
-COPY . .
+# Рабочая директория
+WORKDIR /app
+
+# Копируем файлы зависимостей
+COPY go.mod go.sum ./
+
+# Скачиваем зависимости
 RUN go mod download
 
-# Build
-RUN CGO_ENABLED=0 GOOS=linux go build -o /room ./cmd/main.go
+# Копируем весь проект
+COPY . .
 
-FROM alpine:3.21
+# Переходим в директорию сервиса
+WORKDIR /app/internal/services/room_service
 
-WORKDIR /room
+# Собираем приложение
+RUN CGO_ENABLED=0 GOOS=linux go build -o /room-service ./cmd/main.go
 
-COPY --from=builder /room .
+# Этап запуска
+FROM alpine:latest
 
-EXPOSE 8081
+# Копируем бинарник из этапа сборки
+COPY --from=builder /room-service /room-service
+
 EXPOSE 50051
+EXPOSE 8081
 
-# Run
-CMD ["./room"]
+# Запускаем сервис
+CMD ["/room-service"]

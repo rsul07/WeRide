@@ -21,7 +21,7 @@ type Config struct {
 func New() (*Config, error) {
 	var cfg Config
 
-	err := cleanenv.ReadConfig("./internal/services/room_service/config/config.yaml", &cfg)
+	err := cleanenv.ReadConfig("config/config.yaml", &cfg)
 	if err != nil {
 		return nil, fmt.Errorf("config.Newconfig: %w", err)
 	}

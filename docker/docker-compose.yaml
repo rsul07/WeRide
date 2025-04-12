@@ -6,8 +6,8 @@ services:
       - postgres
     container_name: room_service
     build:
-      context: ./internal/services/room_service
-      dockerfile: ./docker/Dockerfile
+      context: ../
+      dockerfile: ./internal/services/room_service/docker/Dockerfile
     ports:
         - "50051:50051"
         - "8081:8081"
