@@ -3,7 +3,7 @@ stages:
   - build
 
 variables:
-  GO_VERSION: "1.21"
+  GO_VERSION: "1.23.5"
   DOCKER_TAG: "latest"
 
 default:
