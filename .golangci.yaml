@@ -1,141 +1,39 @@
+linters-settings:
+  golangci-lint:
+    version: "2.0"
+  staticcheck:
+  checks:
+    - "-S1000"
+
 linters:
-  # Disable all linters.
-  # Default: false
-  # disable-all: true
-  # Enable specific linter
-  # https://golangci-lint.run/usage/linters/#enabled-by-default
   enable:
-    - asasalint
-    - asciicheck
-    - bidichk
-    - bodyclose
-    - canonicalheader
-    - containedctx
-    - contextcheck
-    - copyloopvar
-    - cyclop
-    - decorder
-    - depguard
-    - dogsled
-    - dupl
-    - dupword
-    - durationcheck
-    - err113
-    - errcheck
-    - errchkjson
-    - errname
-    - errorlint
-    - exhaustive
-    - exhaustruct
-    - exptostd
-    - fatcontext
-    - forbidigo
-    - forcetypeassert
-    - funlen
-    - gci
-    - ginkgolinter
-    - gocheckcompilerdirectives
-    - gochecknoglobals
-    - gochecknoinits
-    - gochecksumtype
-    - gocognit
-    - goconst
-    - gocritic
-    - gocyclo
-    - godot
-    - godox
-    - gofmt
-    - gofumpt
-    - goheader
-    - goimports
-    - gomoddirectives
-    - gomodguard
-    - goprintffuncname
-    - gosec
-    - gosimple
-    - gosmopolitan
-    - govet
-    - grouper
-    - iface
-    - importas
-    - inamedparam
-    - ineffassign
-    - interfacebloat
-    - intrange
-    - ireturn
-    - lll
-    - loggercheck
-    - maintidx
-    - makezero
-    - mirror
-    - misspell
-    - mnd
-    - musttag
-    - nakedret
-    - nestif
-    - nilerr
-    - nilnesserr
-    - nilnil
-    - nlreturn
-    - noctx
-    - nolintlint
-    - nonamedreturns
-    - nosprintfhostport
-    - paralleltest
-    - perfsprint
-    - prealloc
-    - predeclared
-    - promlinter
-    - protogetter
-    - reassign
-    - recvcheck
-    - revive
-    - rowserrcheck
-    - sloglint
-    - spancheck
-    - sqlclosecheck
-    - staticcheck
-    - stylecheck
-    - tagalign
-    - tagliatelle
-    - testableexamples
-    - testifylint
-    - testpackage
-    - thelper
-    - tparallel
-    - unconvert
-    - unparam
-    - unused
-    - usestdlibvars
-    - usetesting
-    - varnamelen
-    - wastedassign
-    - whitespace
-    - wrapcheck
-    - wsl
-    - zerologlint
-  # Enable all available linters.
-  # Default: false
-  # enable-all: true
-  # Disable specific linter
-  # https://golangci-lint.run/usage/linters/#disabled-by-default
-  # Enable presets.
-  # https://golangci-lint.run/usage/linters
-  # Default: []
-  presets:
-    - bugs
-    - comment
-    - complexity
-    - error
-    - format
-    - import
-    - metalinter
-    - module
-    - performance
-    - sql
-    - style
-    - test
-    - unused
-  # Enable only fast linters from enabled linters set (first run won't be fast)
-  # Default: false
-  fast: true
+  - govet       # Стандартный анализатор (проверяет неправильное использование API)
+  - errcheck    # Проверяет необработанные ошибки
+  - staticcheck # Самый мощный статический анализатор
+  - gosec       # Анализ безопасности (SAST)
+
+  - gofmt       # Форматирование кода
+  - goimports   # Сортировка импортов
+  - gocritic    # Продвинутые проверки стиля
+  - revive      # Альтернатива golint с настройками
+
+  - gocyclo     # Цикломатическая сложность функций
+  - nestif      # Слишком глубокие if-else
+  - funlen      # Длина функций
+
+  - errorlint   # Правильное сравнение ошибок
+  - wrapcheck   # Проверка оборачивания ошибок
+  
+  - prealloc    # Предварительное выделение слайсов
+  - wastedassign # Неиспользуемые присваивания
+
+run:
+  timeout: 5m
+  skip-dirs:
+    - vendor
+    - testdata
+    - frontend  # Игнорируем фронтенд полностью
+    - backend/mocks  # Пример: игнорируем сгенерированные моки
+
+output:
+  format: colored-line-number

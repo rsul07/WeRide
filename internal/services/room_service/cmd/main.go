@@ -7,9 +7,10 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	
+
 	"we_ride/internal/services/room_service/config"
 	"we_ride/internal/services/room_service/database"
+
 	// api "weride/internal/services/room_service/api"
 
 	"we_ride/internal/pkg/logger"
