@@ -1,39 +1,48 @@
-linters-settings:
-  golangci-lint:
-    version: "2.0"
-  staticcheck:
-  checks:
-    - "-S1000"
-
-linters:
-  enable:
-  - govet       # Стандартный анализатор (проверяет неправильное использование API)
-  - errcheck    # Проверяет необработанные ошибки
-  - staticcheck # Самый мощный статический анализатор
-  - gosec       # Анализ безопасности (SAST)
-
-  - gofmt       # Форматирование кода
-  - goimports   # Сортировка импортов
-  - gocritic    # Продвинутые проверки стиля
-  - revive      # Альтернатива golint с настройками
-
-  - gocyclo     # Цикломатическая сложность функций
-  - nestif      # Слишком глубокие if-else
-  - funlen      # Длина функций
-
-  - errorlint   # Правильное сравнение ошибок
-  - wrapcheck   # Проверка оборачивания ошибок
-  
-  - prealloc    # Предварительное выделение слайсов
-  - wastedassign # Неиспользуемые присваивания
-
 run:
   timeout: 5m
+  modules-download-mode: readonly
   skip-dirs:
     - vendor
     - testdata
-    - frontend  # Игнорируем фронтенд полностью
-    - backend/mocks  # Пример: игнорируем сгенерированные моки
+    - mocks
+    - internal/mocks
+    - pb
 
 output:
   format: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true
+
+linters:
+  disable-all: true
+  enable:
+    - govet
+    - errcheck
+    - staticcheck
+    - gosec
+    - gofmt
+    - goimports
+    - gocritic
+    - revive
+    - unconvert
+    - ineffassign
+    - misspell
+
+linters-settings:
+  gocritic:
+    enabled-tags:
+      - performance
+      - style
+      - experimental
+    disabled-checks:
+      - hugeParam
+  govet:
+    check-shadowing: true
+  staticcheck:
+    checks:
+      - all
+      - "-ST1000" # disable package naming checks
+  revive:
+    rules:
+      - name: package-comments
+        disabled: true

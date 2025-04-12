@@ -2,17 +2,35 @@ stages:
   - lint
   - build
 
+variables:
+  GO_VERSION: "1.21"
+  DOCKER_TAG: "latest"
+
+default:
+  image: golang:$GO_VERSION
+
 lint:
   stage: lint
-  image: golangci/golangci-lint:latest
+  image: golangci/golangci-lint:v1.56.2
+  script:
+    - golangci-lint run --timeout 5m ./...
   allow_failure: true
-  script: 
-    - golangci-lint run
-    
+  artifacts:
+    when: on_failure
+    paths:
+      - lint-report.txt
+
 build:
   stage: build
   image: docker:24.0.5
   services:
     - docker:24.0.5-dind
+  variables:
+    DOCKER_BUILDKIT: 1
   script:
-    - docker build -f order_service ./docker/Dockerfile
+    - docker build -t $CI_REGISTRY_IMAGE:$DOCKER_TAG -f ./docker/Dockerfile .
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker push $CI_REGISTRY_IMAGE:$DOCKER_TAG
+  only:
+    - main
+    - merge_requests
