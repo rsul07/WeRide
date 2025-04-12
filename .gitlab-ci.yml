@@ -15,10 +15,6 @@ lint:
   script:
     - golangci-lint run --timeout 5m ./...
   allow_failure: true
-  artifacts:
-    when: on_failure
-    paths:
-      - lint-report.txt
 
 build:
   stage: build
