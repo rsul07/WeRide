@@ -25,7 +25,7 @@ func RunMigrations(ctx context.Context, cfg Config) error {
 	)
 
 	migrationsURL := fmt.Sprintf("file://%s", migrationsPath)
-	
+
 	m, err := migrate.New(migrationsURL, connString)
 	if err != nil {
 		return fmt.Errorf("failed to create migration instance: %w", err)
