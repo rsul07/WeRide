@@ -1,6 +1,6 @@
 stages:
-  - build
   - lint
+  - build
 
 lint:
   stage: lint
