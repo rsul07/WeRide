@@ -15,14 +15,14 @@ type DBConfig struct {
 	Port     uint16 `env:"POSTGRES_PORT" env-default:"5432"      yaml:"POSTGRES_PORT"`
 	Username string `env:"POSTGRES_USER" env-default:"root"      yaml:"POSTGRES_USER"`
 	Password string `env:"POSTGRES_PASS" env-default:"1234"      yaml:"POSTGRES_PASS"`
-	Name     string `env:"POSTGRES_DB"   env-default:"postgres"  yaml:"POSTGRES_DB"`
+	Name     string `env:"POSTGRES_DB"   env-default:"repository"  yaml:"POSTGRES_DB"`
 
 	MinConns int32 `env:"POSTGRES_MIN_CONN" env-default:"gg"  yaml:"POSTGRES_MIN_CONN"`
 	MaxConns int32 `env:"POSTGRES_MAX_CONN" env-default:"ggg" yaml:"POSTGRES_MAX_CONN"`
 }
 
 func NewPostgres(ctx context.Context, cfg DBConfig) (*pgxpool.Pool, error) {
-	connString := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable&pool_max_conns=%d&pool_min_conns=%d",
+	connString := fmt.Sprintf("repository://%s:%s@%s:%d/%s?sslmode=disable&pool_max_conns=%d&pool_min_conns=%d",
 		cfg.Username,
 		cfg.Password,
 		cfg.Host,
@@ -34,12 +34,12 @@ func NewPostgres(ctx context.Context, cfg DBConfig) (*pgxpool.Pool, error) {
 
 	conn, err := pgxpool.New(ctx, connString)
 	if err != nil {
-		return nil, fmt.Errorf("unable to connect to database: %w", err)
+		return nil, fmt.Errorf("unable to connect to db: %w", err)
 	}
 
 	m, err := migrate.New(
 		"file://db/migrations",
-		fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
+		fmt.Sprintf("repository://%s:%s@%s:%d/%s?sslmode=disable",
 			cfg.Username,
 			cfg.Password,
 			cfg.Host,

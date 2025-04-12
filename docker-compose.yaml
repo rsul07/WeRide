@@ -1,28 +1,16 @@
 version: '3.5'
 
+
 services:
-  orderservice:
-    depends_on:
-      - postgres
-    container_name: order_service
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile
-    ports:
-        - "50051:50051"
-        - "8081:8081"
   postgres:
-    container_name: postgres_orderservice
-    image: postgres
+    image: postgres:latest
+    container_name: postgres_container
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: 1234
-      PGDATA: /data/postgres
-    volumes:
-       - postgres:/data/postgres
+      POSTGRES_DB: repository
+      PGDATA: /var/lib/postgresql/data/pgdata
     ports:
       - "5432:5432"
-    restart: unless-stopped
-
 volumes:
   postgres:
