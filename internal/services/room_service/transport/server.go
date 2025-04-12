@@ -2,6 +2,7 @@ package room_service_transport
 
 import (
 	"context"
+	"we_ride/internal/pkg/logger"
 	roomservice "we_ride/internal/services/room_service/pb"
 
 	"google.golang.org/grpc"
@@ -27,35 +28,40 @@ func RegisterServer(gRPC *grpc.Server) {
 func (s Server) CreateRoom(ctx context.Context,
 	CreateRoomRequest *roomservice.CreateRoomRequest,
 ) (*roomservice.CreateRoomResponse, error) {
-	panic("")
+	logger.GetLoggerFromCtx(ctx).Info(ctx, "No Implementation")
+	return nil, nil
 }
 
 func (s Server) JoinRoom(ctx context.Context,
 	CreateRoomRequest *roomservice.JoinRoomRequest,
 ) (*roomservice.JoinRoomResponse, error) {
-	panic("")
+	logger.GetLoggerFromCtx(ctx).Info(ctx, "No Implementation")
+	return nil, nil
 }
 
 func (s Server) ExitRoom(ctx context.Context,
 	CreateRoomRequest *roomservice.ExitRoomRequest,
 ) (*roomservice.ExitRoomResponse, error) {
-	panic("")
+	logger.GetLoggerFromCtx(ctx).Info(ctx, "No Implementation")
+	return nil, nil
 }
 
 func (s Server) FindRoom(ctx context.Context,
 	CreateRoomRequest *roomservice.FindRoomRequest,
 ) (*roomservice.FindRoomResponse, error) {
-	panic("")
+	logger.GetLoggerFromCtx(ctx).Info(ctx, "No Implementation")
+	return nil, nil
 }
 
 func (s Server) GetRoomDetails(ctx context.Context,
 	CreateRoomRequest *roomservice.GetRoomDetailsRequest,
 ) (*roomservice.GetRoomDetailsResponse, error) {
-	panic("")
+	logger.GetLoggerFromCtx(ctx).Info(ctx, "No Implementation")
+	return nil, nil
 }
 
 func (s Server) StreamRoomUpdates(*roomservice.StreamRoomUpdatesRequest,
 	grpc.ServerStreamingServer[roomservice.RoomUpdate],
 ) error {
-	panic("")
+	return nil
 }
