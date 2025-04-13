@@ -12,7 +12,7 @@ type Config struct {
 	Port     uint16 `env:"POSTGRES_PORT" env-default:"5432"      yaml:"POSTGRES_PORT"`
 	Username string `env:"POSTGRES_USER" env-default:"root"      yaml:"POSTGRES_USER"`
 	Password string `env:"POSTGRES_PASS" env-default:"1234"      yaml:"POSTGRES_PASS"`
-	Name     string `env:"POSTGRES_DB"   env-default:"postgres"  yaml:"POSTGRES_DB"`
+	Name     string `env:"POSTGRES_DB"   env-default:"repository"  yaml:"POSTGRES_DB"`
 
 	MinConns int32 `env:"POSTGRES_MIN_CONN" env-default:"5"   yaml:"POSTGRES_MIN_CONN"`
 	MaxConns int32 `env:"POSTGRES_MAX_CONN" env-default:"100" yaml:"POSTGRES_MAX_CONN"`
@@ -31,7 +31,7 @@ func New(ctx context.Context, cfg Config) (*pgxpool.Pool, error) {
 
 	conn, err := pgxpool.New(ctx, connString)
 	if err != nil {
-		return nil, fmt.Errorf("unable to connect to database: %w", err)
+		return nil, fmt.Errorf("unable to connect to db: %w", err)
 	}
 
 	return conn, nil
