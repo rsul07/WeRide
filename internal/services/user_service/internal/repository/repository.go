@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"golang.org/x/crypto/bcrypt"
 	"time"
-	
+
 	"we_ride/internal/services/user_service/internal/jwt"
 	"we_ride/internal/services/user_service/internal/models"
 	pb "we_ride/internal/services/user_service/protoc/gen/go"
@@ -81,13 +81,33 @@ func (r *Repository) LoginUser(ctx context.Context, email, password string) (str
 	return token, nil
 }
 
-func (r *Repository) GetUserRoutes(
-	ctx context.Context,
-	userID uuid.UUID,
-) ([]pb.Route, error) {
-	//TODO:
-	result := []pb.Route{}
-	return result, nil
+func (r *Repository) GetUserRoutes(ctx context.Context, userID uuid.UUID) ([]pb.Route, error) {
+	query := `
+		SELECT r.route_id, r.driver_id, r.total_price, r.start_point, r.end_point, r.distance
+		FROM room_passengers rp
+		JOIN routes r ON rp.route_id = r.route_id
+		WHERE rp.user_id = $1
+	`
+	rows, err := r.db.Query(ctx, query, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var routes []pb.Route
+	for rows.Next() {
+		var route pb.Route
+		var totalPrice, distance float64
+		err := rows.Scan(&route.RouteId, &route.DriverId, &totalPrice, &route.StartPoint, &route.EndPoint, &distance)
+		if err != nil {
+			return nil, err
+		}
+		route.TotalPrice = fmt.Sprintf("%.2f", totalPrice)
+		route.Distance = fmt.Sprintf("%.2f", distance)
+		routes = append(routes, route)
+	}
+
+	return routes, nil
 }
 
 func IsUniqueViolation(err error) bool {

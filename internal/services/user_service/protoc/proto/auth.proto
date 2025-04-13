@@ -45,7 +45,6 @@ message LoginResponse {
 }
 
 message HistoryOfRoutesRequest{
-
 }
 
 message HistoryOfRoutesResponse{

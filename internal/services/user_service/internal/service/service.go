@@ -6,7 +6,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"strings"
-	
+
 	"we_ride/internal/services/user_service/internal/jwt"
 	"we_ride/internal/services/user_service/internal/repository"
 	pb "we_ride/internal/services/user_service/protoc/gen/go"
@@ -71,20 +71,29 @@ func (s *ServerAPI) Register(
 	return resp, nil
 }
 
-func (s *ServerAPI) HistoryOrRoutes(
+func (s *ServerAPI) HistoryOfRoutes(
 	ctx context.Context,
 	req *pb.HistoryOfRoutesRequest) (*pb.HistoryOfRoutesResponse, error) {
 	md, ok := metadata.FromIncomingContext(ctx)
+
 	if !ok {
 		return nil, status.Error(codes.Unauthenticated, "Metadata is required")
 	}
-	token := strings.TrimPrefix(md["authorization"][0], "Bearer ")
+	authHeaders := md.Get("authorization")
+
+	if len(authHeaders) == 0 {
+		return nil, status.Error(codes.Unauthenticated, "Authorization token is missing")
+	}
+	token := strings.TrimPrefix(authHeaders[0], "Bearer ")
+
 	claims, err := jwt.ValidateToken(token, s.repo.Secret)
 	if err != nil {
 		return nil, status.Error(codes.Unauthenticated, err.Error())
 	}
+
 	userID := claims.UserID
 	routes, err := s.repo.GetUserRoutes(ctx, userID)
+
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get routes: %v", err)
 	}
@@ -100,5 +109,6 @@ func (s *ServerAPI) HistoryOrRoutes(
 			Distance:   route.Distance,
 		})
 	}
+
 	return &resp, nil
 }
