@@ -1,6 +1,21 @@
 version: '3.8'
 
 services:
+  payment_service:
+    build:
+      context: ../
+      dockerfile: ./internal/services/payment_service/docker/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "50053:50053"
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: payments
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 1234
+
   user_service:
     depends_on:
       postgres:
@@ -43,7 +58,7 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: 1234
-      POSTGRES_MULTIPLE_DATABASES: users,rooms
+      POSTGRES_MULTIPLE_DATABASES: rooms,users,payments
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./docker-postgresql-multiple-databases:/docker-entrypoint-initdb.d
@@ -54,6 +69,33 @@ services:
       retries: 5
     ports:
       - "5432:5432"
+    # networks:
+    #   - postgres
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4:9 
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "raminsultan07@mail.ru"
+      PGADMIN_DEFAULT_PASSWORD: "1234"
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+    networks:
+      - postgres
 
 volumes:
   postgres_data:
+  pgadmin-data:
+
+networks:
+  postgres:
+    driver: bridge

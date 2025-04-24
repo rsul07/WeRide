@@ -1,0 +1,16 @@
+grpc:
+  host: 0.0.0.0
+  port: 50053
+
+users_grpc:
+  host: user_service
+  port: 50051
+
+postgres:
+  host: localhost
+  port: 5432
+  user: root
+  password: 1234
+  db: postgres
+  min_conn: 5
+  max_conn: 20
